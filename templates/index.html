@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>My fat burner</title>
+</head>
+<body>
+     <div class="container pt-3">
+        <div id="content">{% block content %}{% endblock %}</div>
+
+             <!-- Starts form section -->
+    <div class="form-container ">
+        <form class="form-horizontal" action = "/predict/" method="post">
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="gender">genre</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="gender" name="gender">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="age">age</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="age" name="age">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="height">height</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="height" name="height">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="weight">weight</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="weight" name="weight">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="duration">duration</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="duration" name="duration">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="heart_rate">heart_rate</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="body_temp">body_temp</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="body_temp" name="body_temp">
+              </div>
+            </div>
+            <div class="form-group row">
+            <label class="control-label col-sm-2" for="">&nbsp;</label>
+              <div class="col-sm-offset-2 col-sm-4">
+                <button type="submit" class="btn btn-primary">PREDICTION (Calories)</button>
+              </div>
+            </div>
+          </form>
+
+        <!-- Ends form section -->
+    </div>
+<h1>Tu bruleras {{ prediction }} calories </h1>
+
+
+        <div id="footer">
+          {% block footer %}
+          <div class="row">
+
+          </div>
+          {% endblock %}
+        </div>
+      </div>
+
+
+</body>
+</html>
+
+
+
+
