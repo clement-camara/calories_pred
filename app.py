@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request
 import numpy as np
-# import pickle
+import pickle
 import joblib
 
-with open('model.joblib', 'rb') as file:
-    trained_model = joblib.load
+# with open('model.joblib', 'rb') as file:
+#   trained_model = joblib.load
 
-#file = 'test_pickle_model_file'
-#with open('rf_pickle.pkl', 'rb') as file:
-#    trained_model = pickle.load(file)
+file = 'test_pickle_model_file'
+with open('rf_pickle.pkl', 'rb') as file:
+    trained_model = pickle.load(file)
 
 app = Flask(__name__)
 
