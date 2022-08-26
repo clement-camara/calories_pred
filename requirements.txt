@@ -1,4 +1,3 @@
-backports.zoneinfo==0.2.1
 certifi
 click==8.1.3
 cycler==0.11.0

@@ -8,9 +8,10 @@ import pickle
 #    trained_model = joblib.load
 from flask_bootstrap import Bootstrap
 
-file = 'test_pickle_model_file'
-with open('rf_pickle.pkl', 'rb') as file:
-    trained_model = pickle.load(file)
+with open('model_pkl' , 'rb') as f:
+    trained_model = pickle.load(f)
+
+
 
 app = Flask(__name__)
 # Flask-WTF requires an encryption key - the string can be anything
