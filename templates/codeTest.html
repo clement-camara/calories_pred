@@ -51,10 +51,65 @@
                 <p class="text-center"><small class="text-muted">Illustration from <a href="https://pixabay.com/en/rabbit-heart-illustration-vector-3075088/" target="_blank">Pixabay</a>.</small></p>
             </div>
             <div class="col-md-6">
+                <h1 class="pb-2">Bienvenue sur Diet App</h1>
 
-                <!-- Prédiction -->
- <h1>Bravo <br> <br> vous avez brulé {{ prediction[0] }} calories </h1>
-                <!--  -->
+                <p class="lead">Pour commencer la prédiction, complétez le formulaire ci-dessous :</p>
+
+
+                <!-- login form -->
+  <form class="form-horizontal" action = "/predict/" method="post">
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="gender">genre: H=1 F=0</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="gender" name="gender">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="age">age</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="age" name="age">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="height">Taille(cm)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="height" name="height">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="weight">Poids(Kg)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="weight" name="weight">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="duration">Durée exercice(min)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="duration" name="duration">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="heart_rate">Fréquence cardiaque</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="body_temp">Température du corps</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="body_temp" name="body_temp">
+              </div>
+            </div>
+            <div class="form-group row">
+
+              <div class="col-sm-offset-2 col-sm-6", style="padding-left: 105;">
+                <button type="submit" class="btn btn-primary">PREDICTION (Calories)</button>
+              </div>
+            </div>
+          </form>
+                <!-- end login form -->
 
 
 

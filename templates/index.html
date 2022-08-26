@@ -1,88 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>My fat burner</title>
+<html class="h-100"><!-- class="h-100" required for BS sticky footer --><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diet App Bienvenue</title>
+     <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-     <div class="container pt-3">
-        <div id="content">{% block content %}{% endblock %}</div>
 
-             <!-- Starts form section -->
-    <div class="form-container ">
-        <form class="form-horizontal" action = "/predict/" method="post">
+<body class="d-flex flex-column h-100" cz-shortcut-listen="true">
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">Diet App</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search">Search</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- start main page contents -->
+
+
+<section class="flex-shrink-0", background-color="#D5FCFC" style="background-color: #D5FCFC;">
+    <div class="container pt-5">
+
+        <div class="row", style="padding-top: 15px;">
+            <div class="col-md-6">
+                <img src="/static/images/anatomie.png" alt="Illustration of a sport" class="img-fluid">
+
+                <p class="text-center"><small class="text-muted">Illustration from <a href="https://pixabay.com/en/rabbit-heart-illustration-vector-3075088/" target="_blank">Pixabay</a>.</small></p>
+            </div>
+            <div class="col-md-6">
+                <h1 class="pb-2">Bienvenue sur Diet App</h1>
+
+                <p class="lead">Pour commencer la prédiction, complétez le formulaire ci-dessous :</p>
+
+
+                <!-- login form -->
+  <form class="form-horizontal" action = "/predict/" method="post">
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="gender">genre</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="gender">genre: H=1 F=0</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="gender" name="gender">
               </div>
             </div>
+
             <div class="form-group row">
               <label class="control-label col-sm-2" for="age">age</label>
-              <div class="col-sm-4">
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="age" name="age">
               </div>
             </div>
+
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="height">height</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="height">Taille(cm)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="height" name="height">
               </div>
             </div>
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="weight">weight</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="weight">Poids(Kg)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="weight" name="weight">
               </div>
             </div>
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="duration">duration</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="duration">Durée exercice(min)</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="duration" name="duration">
               </div>
             </div>
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="heart_rate">heart_rate</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="heart_rate">Fréquence cardiaque</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="heart_rate" name="heart_rate">
               </div>
             </div>
             <div class="form-group row">
-              <label class="control-label col-sm-2" for="body_temp">body_temp</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2" for="body_temp">Température du corps</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
                 <input type="text" class="form-control" id="body_temp" name="body_temp">
               </div>
             </div>
             <div class="form-group row">
-            <label class="control-label col-sm-2" for="">&nbsp;</label>
-              <div class="col-sm-offset-2 col-sm-4">
+
+              <div class="col-sm-offset-2 col-sm-6", style="padding-left: 105;">
                 <button type="submit" class="btn btn-primary">PREDICTION (Calories)</button>
               </div>
             </div>
           </form>
-
-        <!-- Ends form section -->
-    </div>
-<h1>Tu bruleras {{ prediction }} calories </h1>
+                <!-- end login form -->
 
 
-        <div id="footer">
-          {% block footer %}
-          <div class="row">
 
-          </div>
-          {% endblock %}
+            </div>
         </div>
-      </div>
+
+    </div>
+</section>
 
 
-</body>
-</html>
+    <!-- end main page contents -->
+
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">Site créé par Camara Clement.</a></span>
+        </div>
+    </footer>
+
+    <!-- scripts from CDNs -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <!-- local Bootstrap JS -->
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
 
 
-
+</body></html>
 
