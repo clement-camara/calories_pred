@@ -1,0 +1,75 @@
+ <title>Demo Form</title>
+     <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  </head>
+  <body>
+
+<!-- <img src="{{url_for('static', filename='scott-webb-U5kQvbQWoG0-unsplash.jpg')}}" alt="flag">-->
+<section class="flex-shrink-0">
+    <div class="container"><br>
+      <center>
+        <h2>Prédiction de calories</h2>
+      </center>
+    </div>
+
+    <div class=container"><br>
+    <div class="row align-items-center justify-content-center">
+    <div class="col-md-4">
+
+      <form class="form-horizontal" action = "/predict/" method="post">
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="gender">genre</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+
+                <input type="text" class="form-control" id="gender" name="gender">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="age">age</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="age" name="age">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="height">height</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="height" name="height">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="weight">weight</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="weight" name="weight">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="duration">duration</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="duration" name="duration">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="heart_rate">heart_rate</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="heart_rate" name="heart_rate">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-sm-2" for="body_temp">body_temp</label>
+              <div class="col-sm-6",  style="padding-left: 25px;">
+                <input type="text" class="form-control" id="body_temp" name="body_temp">
+              </div>
+            </div>
+            <div class="form-group row">
+
+              <div class="col-sm-offset-2 col-sm-6", style="padding-left: 105;">
+                <button type="submit" class="btn btn-primary">PREDICTION (Calories)</button>
+              </div>
+            </div>
+          </form>
+
+
+  </body>
+</html>

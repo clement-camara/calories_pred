@@ -6,12 +6,18 @@ import pickle
 
 #with open('model.joblib', 'rb') as file:
 #    trained_model = joblib.load
+from flask_bootstrap import Bootstrap
 
 file = 'test_pickle_model_file'
 with open('rf_pickle.pkl', 'rb') as file:
     trained_model = pickle.load(file)
 
 app = Flask(__name__)
+# Flask-WTF requires an encryption key - the string can be anything
+app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
+# Flask-Bootstrap requires this line
+Bootstrap(app)
+
 
 @app.route('/')
 def index():
