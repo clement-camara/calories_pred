@@ -3,16 +3,19 @@ import numpy as np
 import pickle
 from flask_bootstrap import Bootstrap
 
+#with open('model_pkl', 'rb') as f:
+#    trained_model = pickle.load(f)
 
+# load saved model
 with open('model_pkl', 'rb') as f:
-    trained_model = pickle.load(f)
+    model_pkl_trained_model = pickle.load(f)
+    print(model_pkl_trained_model)
 
 app = Flask(__name__)
 # Flask-WTF requires an encryption key - the string can be anything
-app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
+# app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
 # Flask-Bootstrap requires this line
 Bootstrap(app)
-
 
 
 @app.route('/')
@@ -56,16 +59,11 @@ def preprocessDataAndPredict(gender, age, height, weight, duration, heart_rate, 
     # reshape array
     test_data = test_data.reshape(1, -1)
     print(test_data)
-    prediction = trained_model.predict(test_data)
+    prediction = model_pkl_trained_model.predict(test_data)
+    print(prediction)
     return prediction
-
 
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-
-
-# with open('model.joblib', 'rb') as file:
-#    trained_model = joblib.load
