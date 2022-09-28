@@ -1,0 +1,15 @@
+artifact_uri: /Users/marinelafargue/Desktop/projet calorie/mlflow/mlruns/1/991bde6d3bd14bbda168a8e8d93ad86c/artifacts
+end_time: 1664360493535
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: 991bde6d3bd14bbda168a8e8d93ad86c
+run_uuid: 991bde6d3bd14bbda168a8e8d93ad86c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1664360486433
+status: 3
+tags: []
+user_id: marinelafargue
