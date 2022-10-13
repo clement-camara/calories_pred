@@ -63,38 +63,33 @@ def monitoring(st, **state):
     def add_parameter(clf_name):
         params = {}
         if clf_name == "Lasso":
-            L = st.sidebar.slider("alpha", 1, 10)
+            L = st.sidebar.slider("alpha", 0, 10)
             params["alpha"] = L
         elif clf_name == "RandomForestRegressor":
-            max_depth = st.sidebar.slider("max_depth", 1, 11)
-            if max_depth == 11:
-                max_depth = None
-            params["max_depth"] = max_depth
-            max_leaf_nodes = st.sidebar.slider("max_leaf_nodes", 2, 51)
-            if max_leaf_nodes == 51:
-                max_leaf_nodes = None
-            params["max_leaf_nodes"] = max_leaf_nodes
+            params = None
+            # max_depth = st.sidebar.slider("max_depth", 1, 11)
+            # if max_depth == 11:
+            #     max_depth = None
+            # params["max_depth"] = max_depth
+            # max_leaf_nodes = st.sidebar.slider("max_leaf_nodes", 2, 51)
+            # if max_leaf_nodes == 51:
+            #     max_leaf_nodes = None
+            # params["max_leaf_nodes"] = max_leaf_nodes
 
         else:
             positive = st.sidebar.selectbox("positive", (True, False))
             params["positive"] = positive
-            copy_X = st.sidebar.selectbox("copy_X", (True, False))
-            params["copy_X"] = copy_X
         return params
-
     params = add_parameter(regressior_name)
 
     def get_regressor(clf_name, params):
         if clf_name == "Lasso":
             clf = linear_model.Lasso(alpha=params["alpha"])
         elif clf_name == "RandomForestRegressor":
-            clf = RandomForestRegressor(max_depth=params["max_depth"],
-                                        max_leaf_nodes=params["max_leaf_nodes"])
+            clf = RandomForestRegressor()
         else:
-            clf = LinearRegression(positive=params["positive"],
-                                   copy_X=params["copy_X"])
+            clf = LinearRegression(positive=params["positive"] )
         return clf
-
     clf = get_regressor(regressior_name, params)
 
     # train test split
@@ -106,28 +101,6 @@ def monitoring(st, **state):
 
     st.write(f"regressor = {regressior_name}")
     st.write(f"R2 = {Score}")
-
-
-    # # plot learning curve
-    # st.subheader("Learning Curve")
-    # # Nous allons maintenant calculé la moyenne et l'écart-type des scores d'entraînement et de test.
-    # train_sizes, train_scores, test_scores = learning_curve(clf, X, y, cv=10, scoring='r2', n_jobs=20, train_sizes=np.linspace(0.2, 1, 50))
-    # train_mean = np.mean(train_scores, axis=1)
-    # train_std = np.std(train_scores, axis=1)
-    # test_mean = np.mean(test_scores, axis=1)
-    # test_std = np.std(test_scores, axis=1)
-    #
-    # plt.subplots(1, figsize=(12, 10))
-    # plt.plot(train_sizes, train_mean, '--', color="darkgreen", label="Training score")
-    # plt.plot(train_sizes, test_mean, color="red", label="Cross-validation score")
-    # plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, color="mistyrose")
-    # plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, color="palegreen")
-    # plt.title("Learning Curve")
-    # plt.xlabel("Training Set Size"), plt.ylabel("R2"), plt.legend(loc="best")
-    # plt.tight_layout()
-    # plt.show()
-    # st.pyplot()
-
 
 # fonction pour la page de visualisation qui est aussi en cache
 def visualisation_page(st, **state):
