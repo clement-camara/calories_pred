@@ -1,2 +1,0 @@
-# diet
-# calories_pred
