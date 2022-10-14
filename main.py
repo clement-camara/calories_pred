@@ -9,7 +9,7 @@ from pandas_profiling import ProfileReport
 import IPython, ipywidgets
 import streamlit as st
 from streamlit_multipage import MultiPage
-
+import pickle
 import mlflow
 
 mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')  # set up connection
@@ -29,17 +29,49 @@ def fetch_and_clean_data(data):
     # Fetch data from URL here, and then clean it up.
     return data
 
-
 fetch_and_clean_data(df)
 fetch_and_clean_data(df2)
 fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
 
-
 # fonction en cache pour la page avec le lien de l'app
 def app_page(st, **state):
-    st.title("Retrouver mon application sur ce lien :")
+    st.title("Retrouver l'application web flask sur ce lien :")
     st.write("https://dietappsimplonbordeaux.herokuapp.com/")
+
+    st.header('3 features')
+
+    st.text('Combien de calories je vais dépenser ?')
+    duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
+    age = st.slider("Age", 20, 20, 79)
+    # Taille = st.slider("Taille", 120, 120, 222)
+    # Poids = st.slider("Poids", 30, 30, 130)
+    # Taille_metre = Taille / 100
+    # #IMC_PREP = (Poids / Taille_metre ** 2)
+    IMC = st.slider('IMC', 20, 20, 30)
+
+    # load saved model
+    def predict(data):
+        with open('MLFlow/mlruns/0/b8e7f86bb175450093c241af67755bb0/artifacts/model/model.pkl', 'rb') as f:
+            model_reg = pickle.load(f)
+            return model_reg.predict(data)
+
+    # st.text('Taille', Taille)
+    # st.text('Poids', Poids)
+    # st.text('Taille_metre', Taille_metre)
+
+    if st.button("Prédire les calories brulés"):
+        result = predict([[duration, age, IMC]])
+        st.text(result[0])
+    # if IMC > 25:
+    #     st.text('Attention vous dépasser le poids idéale selon votre IMC')
+
+
+        # with col2:
+        #     st.text('test2')
+        #     petal_l = st.slider('ca', 1.0, 7.0, 0.5)
+        #     petal_l = st.slider('blllll', 1.0, 7.0, 0.5)
+
 
 
 # fonction pour la page de monitoring
@@ -71,7 +103,7 @@ def monitoring(st, **state):
             y = data.calorie
             return X, y
         elif dataset_name == 'best df with age':
-            X = data.drop(['height', 'weight', 'Height_meters', 'calorie'], axis=1)
+            X = data.drop(['Unnamed: 0','height', 'weight', 'Height_meters', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         else:
