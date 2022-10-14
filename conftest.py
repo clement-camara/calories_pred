@@ -21,5 +21,5 @@ def test_index(app, client):
 def test_predict(app, client):
     result = client.get('/predict/')
     assert result.status_code == 200
-    assert (str(result))
+    assert result is not None
     assert result.request.method == 'GET'

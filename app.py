@@ -7,7 +7,7 @@ from flask_bootstrap import Bootstrap
 #    trained_model = pickle.load(f)
 
 # load saved model
-with open('model_pkl', 'rb') as f:
+with open('Pickles/model_pkl', 'rb') as f:
     model_pkl_trained_model = pickle.load(f)
     print(model_pkl_trained_model)
 
