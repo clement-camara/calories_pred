@@ -10,42 +10,44 @@ import IPython, ipywidgets
 import streamlit as st
 from streamlit_multipage import MultiPage
 
-
 import mlflow
 
-
-
 mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')  # set up connection
-mlflow.set_experiment('test-experiment')          # set the experiment
+mlflow.set_experiment('test-experiment')  # set the experiment
 mlflow.sklearn.autolog()
 
-#st.set_option('deprecation.showPyplotGlobalUse', False)
+# st.set_option('deprecation.showPyplotGlobalUse', False)
 
 df = pd.read_csv('data/df_lasso.csv')
 df2 = pd.read_csv('data/df_dum.csv')
 df3 = pd.read_csv('data/best_df.csv')
 df4 = pd.read_csv('data/best_df_with_age.csv')
 
+
 @st.cache
 def fetch_and_clean_data(data):
     # Fetch data from URL here, and then clean it up.
     return data
+
 
 fetch_and_clean_data(df)
 fetch_and_clean_data(df2)
 fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
 
+
 # fonction en cache pour la page avec le lien de l'app
 def app_page(st, **state):
     st.title("Retrouver mon application sur ce lien :")
     st.write("https://dietappsimplonbordeaux.herokuapp.com/")
 
+
 # fonction pour la page de monitoring
 def monitoring(st, **state):
     st.title('Monitorer mes modèles de machine learning')
     st.write("""Explorer different modèles afin de trouver lequel est le meilleur!""")
-    dataset_name = st.sidebar.selectbox("Sélectionner le jeu de données", ('Dataframe basique non encodé', 'df encode', 'best df', 'best df with age'))
+    dataset_name = st.sidebar.selectbox("Sélectionner le jeu de données",
+                                        ('Dataframe basique non encodé', 'df encode', 'best df', 'best df with age'))
     st.write(dataset_name)
     regressior_name = st.sidebar.selectbox("Selection du modèle de régression",
                                            ("Lasso", "RandomForestRegressor", "regression linéaire"))
@@ -65,11 +67,11 @@ def monitoring(st, **state):
             y = data.calorie
             return X, y
         elif dataset_name == 'best df':
-            X = data.drop(['height', 'weight', 'Height_meters','calorie'], axis=1)
+            X = data.drop(['height', 'weight', 'Height_meters', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         elif dataset_name == 'best df with age':
-            X = data.drop(['height', 'weight', 'Height_meters','calorie'], axis=1)
+            X = data.drop(['height', 'weight', 'Height_meters', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         else:
@@ -81,14 +83,13 @@ def monitoring(st, **state):
     MultiPage.save({"total": X}, namespaces=["Features"])
     st.write("Features", X)
 
-
     def add_parameter(clf_name):
         params = {}
         if clf_name == "Lasso":
             L = st.sidebar.slider("alpha", 0.01, 10.00)
             params["alpha"] = L
         elif clf_name == "RandomForestRegressor":
-            #params = None
+            # params = None
             n_estimators = st.sidebar.slider("n_estimators", 10, 300)
             params["n_estimators"] = n_estimators
             max_depth = st.sidebar.slider("max_depth", 1, 5)
@@ -99,6 +100,7 @@ def monitoring(st, **state):
             positive = st.sidebar.selectbox("positive", (True, False))
             params["positive"] = positive
         return params
+
     params = add_parameter(regressior_name)
 
     def get_regressor(clf_name, params):
@@ -110,7 +112,7 @@ def monitoring(st, **state):
                                         max_leaf_nodes=params["max_leaf_nodes"])
             return clf
         else:
-            clf = LinearRegression(positive=params["positive"] )
+            clf = LinearRegression(positive=params["positive"])
         return clf
 
     with mlflow.start_run():
@@ -131,7 +133,7 @@ def monitoring(st, **state):
             st.image('data/learning_curve_RFG_gridsearch.png',
                      caption='LEARNING CURVE RANDOM FOREST REG: meilleur résultat avec les paramètres du grid search')
         elif regressior_name == 'Lasso':
-            #st.image('data/grid_search_RFG.png', caption='grid search Random Forest reg')
+            # st.image('data/grid_search_RFG.png', caption='grid search Random Forest reg')
             st.image('data/learnin_curve_lasso_gridsearch.png',
                      caption="LEARNING CURVE LASSO REG : Meilleur résultat avec alpha=0.01, apres un grid search")
 
