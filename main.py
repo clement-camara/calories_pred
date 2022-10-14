@@ -12,9 +12,9 @@ from streamlit_multipage import MultiPage
 
 import mlflow
 
-#mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')  # set up connection
-#mlflow.set_experiment('test-experiment')  # set the experiment
-#mlflow.sklearn.autolog()
+mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')  # set up connection
+mlflow.set_experiment('test-experiment')  # set the experiment
+mlflow.sklearn.autolog()
 
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 

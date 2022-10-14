@@ -1,0 +1,15 @@
+artifact_uri: ./mlruns/0/77c45fc2d610436cbd164d81793ea685/artifacts
+end_time: 1665737565601
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 77c45fc2d610436cbd164d81793ea685
+run_uuid: 77c45fc2d610436cbd164d81793ea685
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1665737565390
+status: 3
+tags: []
+user_id: marinelafargue
