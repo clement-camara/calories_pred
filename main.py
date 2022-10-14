@@ -29,25 +29,61 @@ def fetch_and_clean_data(data):
     # Fetch data from URL here, and then clean it up.
     return data
 
+
 fetch_and_clean_data(df)
 fetch_and_clean_data(df2)
 fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
 
-# fonction en cache pour la page avec le lien de l'app
+
 def app_page(st, **state):
-    st.title("Retrouver l'application web flask sur ce lien :")
+    st.header("Retrouver l'application web flask sur ce lien")
     st.write("https://dietappsimplonbordeaux.herokuapp.com/")
 
-    st.header('3 features')
+    st.header('Bienvenue sur le caclculateur de votre IMC')
 
+    weight = st.number_input("Entrez votre poids en kg:")
+    status = st.radio('Sélectionnez le format de votre taille: ',
+                      ('centimètres', 'mètres', 'pieds'))
+
+    if status == 'centimètres':
+        height = st.number_input('Centimetres')
+        try:
+            bmi = weight / ((height / 100) ** 2)
+        except:
+            st.text("Entrer une valeur  pour votre taille")
+    elif status == 'mètres':
+        height = st.number_input('Mètres')
+        try:
+            bmi = weight / (height ** 2)
+        except:
+            st.text("Entrer une valeur  pour votre taille")
+    else:
+        height = st.number_input('Pieds')
+        # 1 meter = 3.28
+        try:
+            bmi = weight / ((height / 3.28) ** 2)
+        except:
+            st.text("Entrer une valeur  pour votre taille")
+    if st.button('Calculatrice IMC'):
+        st.text("Votre Index de Masse Graisseuse est de : {}.".format(bmi))
+
+        # give the interpretation of BMI index
+        if bmi < 16:
+            st.error("Vous souffrez d'une insuffisance pondérale extrême, retenez votre IMC pour la suite")
+        elif 16 <= bmi < 18.5:
+            st.warning("Vous souffrez d'une insuffisance pondérale extrême, retenez votre IMC pour la suite")
+        elif 18.5 <= bmi < 25:
+            st.success("Vous êtes bonne santé, retenez votre IMC pour la suite")
+        elif 25 <= bmi < 30:
+            st.warning("Vous êtes en surcharge pondérale, , retenez votre IMC pour la suite")
+        elif bmi >= 30:
+            st.error("Vous êtes en surcharge pondérale extrême")
+
+    st.header('Prédiction avec 3 features')
     st.text('Combien de calories je vais dépenser ?')
     duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
     age = st.slider("Age", 20, 20, 79)
-    # Taille = st.slider("Taille", 120, 120, 222)
-    # Poids = st.slider("Poids", 30, 30, 130)
-    # Taille_metre = Taille / 100
-    # #IMC_PREP = (Poids / Taille_metre ** 2)
     IMC = st.slider('IMC', 20, 20, 30)
 
     # load saved model
@@ -56,22 +92,9 @@ def app_page(st, **state):
             model_reg = pickle.load(f)
             return model_reg.predict(data)
 
-    # st.text('Taille', Taille)
-    # st.text('Poids', Poids)
-    # st.text('Taille_metre', Taille_metre)
-
-    if st.button("Prédire les calories brulés"):
+    if st.button("Prédire les calories brulées"):
         result = predict([[duration, age, IMC]])
         st.text(result[0])
-    # if IMC > 25:
-    #     st.text('Attention vous dépasser le poids idéale selon votre IMC')
-
-
-        # with col2:
-        #     st.text('test2')
-        #     petal_l = st.slider('ca', 1.0, 7.0, 0.5)
-        #     petal_l = st.slider('blllll', 1.0, 7.0, 0.5)
-
 
 
 # fonction pour la page de monitoring
@@ -103,7 +126,7 @@ def monitoring(st, **state):
             y = data.calorie
             return X, y
         elif dataset_name == 'best df with age':
-            X = data.drop(['Unnamed: 0','height', 'weight', 'Height_meters', 'calorie'], axis=1)
+            X = data.drop(['Unnamed: 0', 'height', 'weight', 'Height_meters', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         else:
