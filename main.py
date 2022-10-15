@@ -84,7 +84,7 @@ def app_page(st, **state):
     st.text('Combien de calories je vais dépenser ?')
     duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
     age = st.slider("Age", 20, 20, 79)
-    IMC = st.slider('IMC', 20, 20, 30)
+    IMC = st.slider('IMC', 13.00, 13.00, 32.00)
 
     # load saved model
     def predict(data):
@@ -118,11 +118,11 @@ def monitoring(st, **state):
             data = df4
         # Définition de la cible et des features
         if dataset_name == 'Dataframe basique non encodé':
-            X = data.drop(['user_id', 'gender', 'calorie'], axis=1)
+            X = data.drop(['Unnamed: 0','user_id', 'gender', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         elif dataset_name == 'best df':
-            X = data.drop(['height', 'weight', 'Height_meters', 'calorie'], axis=1)
+            X = data.drop(['Unnamed: 0','height', 'weight', 'Height_meters', 'calorie'], axis=1)
             y = data.calorie
             return X, y
         elif dataset_name == 'best df with age':
@@ -130,13 +130,16 @@ def monitoring(st, **state):
             y = data.calorie
             return X, y
         else:
-            X = data.drop(['user_id', 'calorie'], axis=1)
+            X = data.drop(['Unnamed: 0','user_id', 'calorie'], axis=1)
             y = data.calorie
             return X, y
 
     X, y = get_dataset(dataset_name)
     MultiPage.save({"total": X}, namespaces=["Features"])
-    st.write("Features", X)
+    if dataset_name == 'Dataframe basique non encodé':
+        return st.write("Data", df.drop(['Unnamed: 0','user_id', 'calorie'], axis=1))
+    else:
+        return st.write("Features", X)
 
     def add_parameter(clf_name):
         params = {}
@@ -144,7 +147,6 @@ def monitoring(st, **state):
             L = st.sidebar.slider("alpha", 0.01, 10.00)
             params["alpha"] = L
         elif clf_name == "RandomForestRegressor":
-            # params = None
             n_estimators = st.sidebar.slider("n_estimators", 10, 300)
             params["n_estimators"] = n_estimators
             max_depth = st.sidebar.slider("max_depth", 1, 5)

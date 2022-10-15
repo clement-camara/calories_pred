@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marinelafargue/Desktop/projet%20calorie/mlruns/0/d0de809ac6a140549db9de9f477c33c3/artifacts
+end_time: 1665791943918
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: d0de809ac6a140549db9de9f477c33c3
+run_uuid: d0de809ac6a140549db9de9f477c33c3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1665791943785
+status: 3
+tags: []
+user_id: marinelafargue
