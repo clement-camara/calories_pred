@@ -1,3 +1,6 @@
+import pickle
+from PIL import Image
+
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model
@@ -9,12 +12,9 @@ from pandas_profiling import ProfileReport
 import IPython, ipywidgets
 import streamlit as st
 from streamlit_multipage import MultiPage
-import pickle
-import mlflow
-
-# mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')  # set up connection
-# mlflow.set_experiment('test-experiment')  # set the experiment
-# mlflow.sklearn.autolog()
+from sklearn.model_selection import learning_curve
+import numpy as np
+import matplotlib.pyplot as plt
 
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -36,9 +36,11 @@ fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
 
 
+# fonction en cache pour la page avec le lien de l'app
 def app_page(st, **state):
-    st.header("Retrouver l'application web flask sur ce lien")
-    st.write("https://dietappsimplonbordeaux.herokuapp.com/")
+    image = Image.open('data/diet_image.jpg')
+    st.image(image)
+
     st.header('Bienvenue sur le caclculateur de votre IMC')
 
     weight = st.number_input("Entrez votre poids en kg:")
@@ -92,14 +94,24 @@ def app_page(st, **state):
             return model_reg.predict(data)
 
     if st.button("Prédire les calories brulées"):
-        result = predict([[duration, age, IMC]])
-        st.text(result[0])
+        result = predict([ [ duration, age, IMC ] ])
+        st.text(result[ 0 ])
+        st.balloons()
+
+    st.title("Retrouver également mon application flask sur ce lien :")
+    st.write("https://dietappsimplonbordeaux.herokuapp.com/")
+
+
+
+# fonction pour la page de monitoring
+def play_with_df(st, df):
+    st.title('Monitorer mes modèles de machine learning')
 
 
 # fonction pour la page de monitoring
 def monitoring(st, **state):
     st.title('Monitorer mes modèles de machine learning')
-    st.write("""Explorer different modèles afin de trouver lequel est le meilleur!""")
+    st.write("""explorer different modèles afin de trouver lequel est le meilleur!""")
     dataset_name = st.sidebar.selectbox("Sélectionner le jeu de données",
                                         ('Dataframe basique non encodé', 'df encode', 'best df', 'best df with age'))
     st.write(dataset_name)
@@ -117,29 +129,25 @@ def monitoring(st, **state):
             data = df4
         # Définition de la cible et des features
         if dataset_name == 'Dataframe basique non encodé':
-            X = data.drop(['Unnamed: 0','user_id', 'gender', 'calorie'], axis=1)
+            X = data.drop([ 'Unnamed: 0', 'user_id', 'gender', 'calorie' ], axis=1)
             y = data.calorie
             return X, y
         elif dataset_name == 'best df':
-            X = data.drop(['Unnamed: 0','height', 'weight', 'Height_meters', 'calorie'], axis=1)
+            X = data.drop([ 'Unnamed: 0', 'height', 'weight', 'Height_meters', 'calorie' ], axis=1)
             y = data.calorie
             return X, y
         elif dataset_name == 'best df with age':
-            X = data.drop(['Unnamed: 0', 'height', 'weight', 'Height_meters', 'calorie'], axis=1)
+            X = data.drop([ 'Unnamed: 0', 'height', 'weight', 'Height_meters', 'calorie' ], axis=1)
             y = data.calorie
             return X, y
         else:
-            X = data.drop(['Unnamed: 0','user_id', 'calorie'], axis=1)
+            X = data.drop([ 'Unnamed: 0', 'user_id', 'calorie' ], axis=1)
             y = data.calorie
             return X, y
 
     X, y = get_dataset(dataset_name)
-    MultiPage.save({"total": X}, namespaces=["Features"])
-    if dataset_name == 'Dataframe basique non encodé':
-        return st.write("Data", df.drop(['Unnamed: 0','user_id', 'calorie'], axis=1))
-    else:
-        return st.write("Features", X)
-
+    MultiPage.save({"total": X}, namespaces=[ "Features" ])
+    st.write("Dataset", X)
 
     def add_parameter(clf_name):
         params = {}
@@ -159,7 +167,6 @@ def monitoring(st, **state):
         return params
 
     params = add_parameter(regressior_name)
-
 
     def get_regressor(clf_name, params):
         if clf_name == "Lasso":
@@ -182,8 +189,8 @@ def monitoring(st, **state):
     y_pred = clf.predict(X_test)
     Score = r2_score(y_test, y_pred)
 
-    # st.write(f"regressor = {regressior_name}")
-    # st.write(f"R2 = {Score}")
+    st.write(f"regressor = {regressior_name}")
+    st.write(f"R2 = {Score}")
 
     # if regressior_name == 'RandomForestRegressor':
     #     st.image('data/grid_search_RFG.png', caption='grid search Random Forest reg')
@@ -195,9 +202,12 @@ def monitoring(st, **state):
     #              caption="LEARNING CURVE LASSO REG : Meilleur résultat avec alpha=0.01, apres un grid search")
 
 
-# fonction pour la page de visualisation qui est aussi en cache
+
+
+
+
 def visualisation_page(st, **state):
-    MultiPage.save({"total": df}, namespaces=["df"])
+    MultiPage.save({"total": df}, namespaces=[ "df" ])
     profile = ProfileReport(df,
                             title="Diet Data",
                             dataset={
@@ -216,5 +226,3 @@ app.add_app("Diet app Page", app_page)
 app.add_app("Monitoring Page", monitoring)
 app.add_app("Visualisation Page", visualisation_page)
 app.run()
-
-# st.set_option('deprecation.showPyplotGlobalUse', False)
