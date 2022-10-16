@@ -38,8 +38,8 @@ fetch_and_clean_data(df4)
 
 # fonction en cache pour la page avec le lien de l'app
 def app_page(st, **state):
-    image = Image.open('data/diet_image.jpg')
-    st.image(image)
+    # image = Image.open('data/diet_image.jpg')
+    # st.image(image)
 
     st.header('Bienvenue sur le caclculateur de votre IMC')
 
