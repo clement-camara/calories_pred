@@ -17,7 +17,7 @@ from streamlit_multipage import MultiPage
 from sklearn.model_selection import learning_curve
 import numpy as np
 import matplotlib.pyplot as plt
-from mlxtend.plotting import plot_learning_curves
+
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import KFold
