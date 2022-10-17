@@ -295,7 +295,7 @@ def monitoring(st, **state):
     st.sidebar.header('MODELE')
     st.write(f"regressor = {regressior_name}")
 
-    st.write(f"R2_train = {R2_train}")
+   ## st.write(f"R2_train = {R2_train}")
     st.write(f"R2 = {R2}")
 
     st.write(f"MAE = {MAE}")
