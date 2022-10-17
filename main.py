@@ -1,4 +1,6 @@
 import pickle
+
+import requests.models
 import  yellowbrick
 from sklearn.model_selection import cross_val_score
 from PIL import Image
@@ -28,6 +30,9 @@ from sklearn.linear_model import RidgeCV
 from sklearn.model_selection import GridSearchCV
 
 
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+
 #### 1- RECUPERER LES DATAFRAMES
 
 df = pd.read_csv('data/df_lasso.csv')
@@ -44,6 +49,12 @@ fetch_and_clean_data(df2)
 fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
 
+
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 
 #### 1- FONCTION POUR LA PAGE D ACCEUIL
 
@@ -80,6 +91,10 @@ def app_page(st, **state):
     if st.button('Calculatrice IMC'):
         st.text("Votre Index de Masse Graisseuse est de : {}.".format(bmi))
 
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+
         #### INTERPRETATION DES INDEX IMC
 
         if bmi < 16:
@@ -99,6 +114,10 @@ def app_page(st, **state):
     age = st.slider("Age", 20, 20, 79)
     IMC = st.slider('IMC', 13.00, 13.00, 32.00)
 
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+
     #### FONCTION POUR LA PREIDTION ET CREATION DU BOUTON AVEC UNE ANIMATION
 
     def predict(data):
@@ -117,6 +136,11 @@ def app_page(st, **state):
     st.title("Retrouver également mon application flask sur ce lien :")
     st.write("https://dietappsimplonbordeaux.herokuapp.com/")
 
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 
 ### FONCTION POUR LA PAGE DE MONOTORING
 
@@ -133,6 +157,7 @@ def monitoring(st, **state):
                                          'Dataframe encodé avec feature engenering V1',
                                          'Dataframe encodé avec feature engenering V2'))
     st.write(dataset_name)
+    st.spinner(text="Dataframe n progress ...")
 
 
     #### B CREATION DE LA SELECTION DU MODELE DE ML
@@ -142,6 +167,11 @@ def monitoring(st, **state):
                                             "RandomForestRegressor",
                                             "regression linéaire"))
 
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
     #### FONCTION QUI RECUPERE LE DATAFRAME AVEC LES BONNE COLONNES SUR LEQUEL SERA FAIT LA PREIDCTION
 
@@ -158,6 +188,12 @@ def monitoring(st, **state):
 
         elif dataset_name == 'Dataframe encodé avec feature engenering V2':
             data = df4
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
 
         #### DEFINITION DE LA  CIBLE ET DES FEATURES
@@ -189,6 +225,12 @@ def monitoring(st, **state):
     MultiPage.save({"total": X}, namespaces=[ "Features" ])
     st.write("Dataset", X)
 
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
     ### FONCTION DE CREATION DES PARAMETRES EN FONCTION DU MODELE CHOISIT
 
@@ -224,6 +266,11 @@ def monitoring(st, **state):
 
     params = add_parameter(regressior_name)
 
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
     #### 1- FONCTION DE CREATION: MODEL + PARAMETRE
 
@@ -246,6 +293,9 @@ def monitoring(st, **state):
     clf = get_regressor(regressior_name, params)
 
 
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+
     #### SEPARATION DES DONNES DE TEST ET D'ENTRAINEMENT
 
     st.sidebar.header('Définir les HyperParamètres pour la séparation des données')
@@ -255,6 +305,9 @@ def monitoring(st, **state):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=split_size, random_state=seed)
 
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
    # CROSS VALIDATION / GRID SEARCH
 
@@ -272,35 +325,29 @@ def monitoring(st, **state):
     st.write(f"Cross val score Train Set = {scores}")
     st.write(f"Cross val score Test Set = {scores_test}")
 
-    clf.fit(X_train, y_train)
-
+    st.spinner('En attente du fit des données d entrainement...')
+    st.success('Done!')
 
     #### ENTRAINEMENT DU MODELE SUR LE JEU D ENTRAIENEMENT
-
-    #param_grid.fit(X_train, y_train)
-
-
+    clf.fit(X_train, y_train)
     #### PREDICTION SUR LE JEU DE TEST
-
     y_pred = clf.predict(X_test)
 
+    #### AFFICHAGE DU  MODELE DES METRIQUES
     R2 = r2_score(y_test, y_pred)
-    #R2_train = clf.score(X_train, y_train)
-
-    #MAE_train = clf.mean_absolute_error(X_train, y_train)
     MAE = mean_absolute_error(y_test, y_pred)
-
-    #### AFFICHAGE DU SCORE ET DU  MODELE
 
     st.sidebar.header('MODELE')
     st.write(f"regressor = {regressior_name}")
-
-   ## st.write(f"R2_train = {R2_train}")
     st.write(f"R2 = {R2}")
-
     st.write(f"MAE = {MAE}")
-   # st.write(f"MAE train = {MAE_train}")
 
+
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
     #### AFFICHAGE DE LA LEARNING CURVE SELON LE MODELE UTILISÉ
 
@@ -308,44 +355,42 @@ def monitoring(st, **state):
 
     from yellowbrick.model_selection import LearningCurve
     # Create the learning curve visualizer
-
-
     visualizer = LearningCurve(clf, scoring='r2')
     visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
     visualizer.score(X_test, y_test)  # Evaluate the model on the test data
     visualizer.show()
     st.pyplot()
 
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------
 
+    #### AFFICHAGE DES RESIDUS
 
     from yellowbrick.regressor import ResidualsPlot
 
     visualizer = ResidualsPlot(clf)
-
     visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
     visualizer.score(X_test, y_test)  # Evaluate the model on the test data
     visualizer.show()
     st.pyplot()
-
-
-    from yellowbrick.regressor import ResidualsPlot
-
     visualizer = ResidualsPlot(clf, hist=False, qqplot=True)
 
+    #### AFFICHAGE DES RESIDUS PAR QQPLOT
+
     visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
     visualizer.score(X_test, y_test)  # Evaluate the model on the test data
     visualizer.show()
     st.pyplot()
-    # if regressior_name == 'RandomForestRegressor':
-    #     st.image('data/grid_search_RFG.png', caption='grid search Random Forest reg')
-    #     st.image('data/learning_curve_RFG_gridsearch.png',
-    #              caption='LEARNING CURVE RANDOM FOREST REG: meilleur résultat avec les paramètres du grid search')
-    # elif regressior_name == 'Lasso':
-    #     # st.image('data/grid_search_RFG.png', caption='grid search Random Forest reg')
-    #     st.image('data/learnin_curve_lasso_gridsearch.png',
-    #              caption="LEARNING CURVE LASSO REG : Meilleur résultat avec alpha=0.01, apres un grid search")
 
 
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 
 
 ### FONCTION POUR LA PAGE D'EXPLORATION DES DONNÉES
@@ -361,6 +406,169 @@ def visualisation_page(st, **state):
                             })
     st_profile_report(profile)
 
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+
+##### PAGE QUI CONSTITUE LE READ ME, L'ARCHITECTURE DU PROJET
+
+def read_me(st, **state):
+    st.header('ARCHITECTURE')
+
+    image = Image.open('data/schema_archi.png')
+    st.image(image)
+
+    st.header('Pré-requis')
+    st.text('** un IDE **')
+    st.text('** Un compte github **')
+    st.text('** Anaconda comme gestionnaire de paquets **')
+
+    st.header('Premier pas sur le projet')
+
+    st.markdown('**1) Cloner le repo Github**')
+    code = '''git clone https://github.com/collectif-CAKUVA/rocketfid '''
+    st.code(code, language='python')
+
+    st.markdown("**2) Récupérer l'environnement de travail conda avec le fichier .yml:**")
+    code = '''conda env create -f environment.yml
+conda activate environnement '''
+    st.code(code, language='python')
+
+    st.markdown("**3) Si d'autres dépendances sont ajoutées/supprimées , mettre à jour le .yml à l'aide de la commande**")
+    code = '''conda env export --from-history > environment.yml '''
+    st.code(code, language='python')
+
+    st.markdown("**3) Si vous n'utilisez pas conda récupérer les packages avec le requirements.txt**")
+
+    st.markdown("**4) Démarrer streamlit en local**")
+    code = '''streamlit run main.py'''
+    st.code(code, language='python')
+
+    st.markdown("**5) Démarrer flask en local **")
+    code = '''Lancer app.py'''
+    st.code(code, language='python')
+
+    st.header('STATS')
+
+
+    st.header('FONCTIONNALITÉS :')
+
+    st.header('*FONCTION DB*')
+
+    st.markdown('**Notebook insert into DB pour insérer les données dans la base de données Postresql en local**')
+    code = '''Connexion
+création de la table
+Insertion '''
+    st.code(code, language='python')
+
+    st.markdown("**Connection à la DB sécurisé via des variables d'environnement et un fichier.env**")
+    code = '''load_dotenv()  # Nécessaire pour charger les variables d'environnement précédemment définies
+# Créer une connexion à postgres
+connection = psycopg2.connect(host=os.environ.get('PG_HOST'),
+                        user=os.environ.get('PG_USER'),
+                        password=os.environ.get('PG_PASSWORD'),
+                        dbname=os.environ.get('PG_DATABASE'))
+connection.autocommit = True  # Assurez-vous que les données sont ajoutées à la base de données immédiatement après les commandes d'écriture.
+cursor = connection.cursor()
+cursor.execute('SELECT %s as connected;', ('Connection à postgres Réussie!',))
+print(cursor.fetchone())
+ '''
+    st.code(code, language='python')
+
+    st.markdown('**Fonction fetch de la donnée depuis la DB**')
+    code = '''
+def postgresql_to_dataframe(conn, select_query, column_names):
+    """
+    Transformer une requête SELECT en un dataframe pandas
+    """
+    cursor = conn.cursor()
+    try:
+        cursor.execute(select_query)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        cursor.close()
+        return 1
+    
+    # Naturellement, nous obtenons une liste de "tupples".
+    tupples = cursor.fetchall()
+    cursor.close()
+    
+    # Nous devons juste le transformer en dataframe pandas.
+    df = pd.DataFrame(tupples, columns=column_names)
+    return df'''
+    st.code(code, language='python')
+
+    st.markdown('**Fonction de création du dataframe**')
+    code = '''conn = connection
+column_names = ["user_id","gender", "age", "height", "weight", "duration", "heart_rate", "body_temp", "calorie"]
+# Execute the "SELECT *" query
+df_db = postgresql_to_dataframe(conn, 
+"SELECT persons.user_id as id, gender, age, height, weight, duration, heart_rate, body_temp,calorie FROM calories INNER JOIN persons ON calories.user_id = persons.user_id"
+                                , column_names)
+df_db.head() '''
+    st.code(code, language='python')
+
+
+    st.header('*FONCTION DE L APP*')
+
+    st.markdown('**Fonction pour récupérer les données**')
+    code = '''fetch_and_clean_data(data) '''
+    st.code(code, language='python')
+
+    st.markdown('**Fonction pour ajouter les pages de mon app**')
+    code = '''app_page(st, **state): '''
+    st.code(code, language='python')
+
+    st.markdown('**Fonction pour prédire**')
+    code = '''predict(data):'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui s'occupe de la page monitoring**")
+    code = '''monitoring(st, **state)'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui récupère les 4 Datasets utilsiés**")
+    code = '''get_dataset(dataset_name)'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui créé et ajoute les paramètres du modèle**")
+    code = '''add_parameter(clf_name)'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui récupère le modèle**")
+    code = '''get_regressor(clf_name, c)'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui créé et ajoute les paramètres du modèle**")
+    code = '''add_parameter(clf_name)'''
+    st.code(code, language='python')
+
+    st.markdown("**Fonction qui créé la page de visualisation avec profile report**")
+    code = '''visualisation_page(st, **state)'''
+    st.code(code, language='python')
+
+    st.header('*ML FLOW*')
+
+    st.markdown("**Le fichier pickles pour charger le modèle est généré par MLFLow en direct**")
+    code =     """    def predict(data):
+        with open('MLFlow/mlruns/0/b8e7f86bb175450093c241af67755bb0/artifacts/model/model.pkl', 'rb') as f:
+            model_reg = pickle.load(f)
+            return model_reg.predict(data)"""
+
+    st.markdown("**Les artifacts, paramètres, métriques et modèles sont chargé en direct sur MLFlow depuis l'application de monitoring**")
+    image = Image.open('data/mlflow_folder.png')
+    st.image(image)
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 
 app = MultiPage()
 app.navbar_style = "SelectBox"
@@ -369,4 +577,5 @@ app.navbar_name = "Menu"
 app.add_app("Diet app Page", app_page)
 app.add_app("Monitoring Page", monitoring)
 app.add_app("Visualisation Page", visualisation_page)
+app.add_app("Documentation de l'application", read_me)
 app.run()
