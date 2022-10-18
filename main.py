@@ -1,5 +1,5 @@
 # MANIPULATION DES DONNÉES
-import mlflow
+
 import numpy as np
 import pandas as pd
 from pandas_profiling import ProfileReport
@@ -47,9 +47,9 @@ from PIL import Image
 #MLFLOW Monitoring
 # import mlflow
 #
-mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')
-mlflow.set_experiment('test-experiment BB')
-mlflow.sklearn._autolog()
+# mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')
+# mlflow.set_experiment('test-experiment BB')
+# mlflow.sklearn._autolog()
 
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
@@ -134,15 +134,24 @@ def app_page(st, **state):
     st.header('Prédiction avec 3 features')
 
     st.text('Combien de calories je vais dépenser ?')
-    # duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
-    # age = st.slider("Age", 20, 20, 79)
 
-    # IMC = st.slider('IMC', 13.00, 13.00, 32.00)
-    # heart_rate = st.slider("Pulsation cardiaque en minutes", 67, 67, 128)
-    # body_temp = st.slider("Température du corps en degrés", 37, 37, 42)
-
-    duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
     age = st.slider("Age", 20, 20, 79)
+    duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
+    heart_rate = st.slider("Pulsation cardiaque en minutes", 67, 67, 128)
+    #body_temp = st.slider("Température du corps en degrés", 37, 37, 42)
+
+    sexe = st.selectbox("Sélectionner votre sexe",("Masculin","Feminin"))
+
+    if sexe == 'Masculin':
+        Homme = 1
+    else:
+        Homme = 0
+    if sexe == 'Feminin':
+        Femme = 1
+    else:
+        Femme = 0
+
+
     IMC = st.slider('IMC', 13.00, 13.00, 32.00)
 
 
@@ -152,16 +161,13 @@ def app_page(st, **state):
     #### FONCTION POUR LA PREIDTION ET CREATION DU BOUTON AVEC UNE ANIMATION
 
     def predict_(data):
-        with open('/Users/marinelafargue/Desktop/projet calorie/Notebook ML/RF_pkl', 'rb') as f:
+        with open('/Users/marinelafargue/Desktop/projet calorie/LAST_RUN/Random_forest6_features_pkl', 'rb') as f:
             model_reg = pickle.load(f)
-            st.write(age)
-            st.write(IMC)
-            st.write(duration)
             return model_reg.predict(data)
 
 
     if st.button("Prédire les calories brulées"):
-        result = predict_([[age,duration,IMC]])
+        result = predict_([[age,duration,heart_rate,Homme,Femme,IMC]])
 
         st.text(result[0])
 
@@ -393,7 +399,8 @@ def monitoring(st, **state):
     #### ENTRAINEMENT DU MODELE SUR LE JEU D ENTRAINENEMENT
     clf.fit(X_train, y_train)
 
-    # with open('LAST_MODEL_pkl', 'wb') as files:
+    # importer le fichier pickles
+    # with open('last_run_model_pkl', 'wb') as files:
     #     pickle.dump(clf, files)
 
     #### PREDICTION SUR LE JEU DE TEST
@@ -409,7 +416,7 @@ def monitoring(st, **state):
     st.write("**Affichage du modèle**")
     st.write(f"regressor = {regressior_name}")
     st.write("**Affichage des métriques de performance**")
-    st.write(f"R2 = {R2}")
+    #st.write(f"R2 = {R2}")
     st.write(f"MAE = {MAE}")
 
 
