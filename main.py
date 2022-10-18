@@ -1,34 +1,55 @@
-import pickle
-
-import requests.models
-import  yellowbrick
-from sklearn.model_selection import cross_val_score
-from PIL import Image
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn import linear_model
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score
-from sklearn.metrics import mean_absolute_error
-import pandas as pd
-from streamlit_pandas_profiling import st_profile_report
-from pandas_profiling import ProfileReport
-import IPython, ipywidgets
-import streamlit as st
-from streamlit_multipage import MultiPage
-from sklearn.model_selection import learning_curve
+# MANIPULATION DES DONNÉES
+import mlflow
 import numpy as np
+import pandas as pd
+from pandas_profiling import ProfileReport
 import matplotlib.pyplot as plt
 
+import streamlit as st
+from streamlit_multipage import MultiPage
+from streamlit_pandas_profiling import st_profile_report
+
+# DIVISER LES DONNEES
+from sklearn.model_selection import train_test_split
+
+# METTRE A L ECHELLE
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import RobustScaler
+
+# VALIDATION CROISÉE DES DONNÉES
+from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import KFold
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import RobustScaler
-from sklearn.linear_model import LassoCV
-from sklearn.linear_model import RidgeCV
-from sklearn.model_selection import GridSearchCV
 
+# MODÈLES DE MACHINE LEARNING
+from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import AdaBoostRegressor
+
+# METRIQUES DE PERFORMANCE
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_absolute_error
+
+# INTERPRETATION DES MODÈLES
+from sklearn.model_selection import learning_curve
+import  yellowbrick
+
+# AUTRE
+import pickle
+import requests.models
+import IPython, ipywidgets
+from PIL import Image
+
+
+#MLFLOW Monitoring
+# import mlflow
+#
+mlflow.set_tracking_uri('/Users/marinelafargue/Desktop/projet calorie/MLFlow/mlruns')
+mlflow.set_experiment('test-experiment BB')
+mlflow.sklearn._autolog()
 
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
@@ -39,8 +60,9 @@ df = pd.read_csv('data/df_lasso.csv')
 df2 = pd.read_csv('data/df_encode_complete_OK.csv')
 df3 = pd.read_csv('data/df_encode_complete.csv')
 df4 = pd.read_csv('data/df_encode_complete.csv')
+df5 = pd.read_csv('data/dataframe_app.csv')
 
-@st.cache
+#@st.cache
 def fetch_and_clean_data(data):
     return data
 
@@ -48,6 +70,7 @@ fetch_and_clean_data(df)
 fetch_and_clean_data(df2)
 fetch_and_clean_data(df3)
 fetch_and_clean_data(df4)
+fetch_and_clean_data(df5)
 
 
 # --------------------------------------------------------------------------------------------------------------
@@ -74,20 +97,20 @@ def app_page(st, **state):
         try:
             bmi = weight / ((height / 100) ** 2)
         except:
-            st.text("Entrer une valeur  pour votre taille")
+            st.text("Entrer une valeur pour votre taille")
     elif status == 'mètres':
         height = st.number_input('Mètres')
         try:
             bmi = weight / (height ** 2)
         except:
-            st.text("Entrer une valeur  pour votre taille")
+            st.text("Entrer une valeur pour votre taille")
     else:
         height = st.number_input('Pieds')
         # 1 meter = 3.28
         try:
             bmi = weight / ((height / 3.28) ** 2)
         except:
-            st.text("Entrer une valeur  pour votre taille")
+            st.text("Entrer une valeur pour votre taille")
     if st.button('Calculatrice IMC'):
         st.text("Votre Index de Masse Graisseuse est de : {}.".format(bmi))
 
@@ -109,7 +132,15 @@ def app_page(st, **state):
             st.error("Vous êtes en surcharge pondérale extrême")
 
     st.header('Prédiction avec 3 features')
+
     st.text('Combien de calories je vais dépenser ?')
+    # duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
+    # age = st.slider("Age", 20, 20, 79)
+
+    # IMC = st.slider('IMC', 13.00, 13.00, 32.00)
+    # heart_rate = st.slider("Pulsation cardiaque en minutes", 67, 67, 128)
+    # body_temp = st.slider("Température du corps en degrés", 37, 37, 42)
+
     duration = st.slider("Durée d'exercice en minutes", 1, 1, 30)
     age = st.slider("Age", 20, 20, 79)
     IMC = st.slider('IMC', 13.00, 13.00, 32.00)
@@ -120,16 +151,19 @@ def app_page(st, **state):
 
     #### FONCTION POUR LA PREIDTION ET CREATION DU BOUTON AVEC UNE ANIMATION
 
-    def predict(data):
-        with open('MLFlow/mlruns/0/b8e7f86bb175450093c241af67755bb0/artifacts/model/model.pkl', 'rb') as f:
+    def predict_(data):
+        with open('/Users/marinelafargue/Desktop/projet calorie/Notebook ML/RF_pkl', 'rb') as f:
             model_reg = pickle.load(f)
+            st.write(age)
+            st.write(IMC)
+            st.write(duration)
             return model_reg.predict(data)
 
-    if st.button("Prédire les calories brulées"):
-        result = predict([ [ duration, age, IMC ] ])
-        st.text(result[ 0 ])
-        st.balloons()
 
+    if st.button("Prédire les calories brulées"):
+        result = predict_([[age,duration,IMC]])
+
+        st.text(result[0])
 
     #### AJOUT DU LIEN DE L APPLICATION FLASK EN LIGNE SUR HEOKU
 
@@ -151,8 +185,10 @@ def monitoring(st, **state):
 
     #### A- CREATION DE LA SELECTION DU DATAFRAME
 
+    st.sidebar.header('**FILTRES**')
     dataset_name = st.sidebar.selectbox("Sélectionner le jeu de données",
-                                        ('Dataframe basique non encodé sans le genre',
+                                        ('Dataframe avec toute les features',
+                                        'Dataframe basique non encodé sans le genre',
                                          'Dataframe encodé',
                                          'Dataframe encodé avec feature engenering V1',
                                          'Dataframe encodé avec feature engenering V2'))
@@ -165,6 +201,7 @@ def monitoring(st, **state):
     regressior_name = st.sidebar.selectbox("Selection du modèle",
                                            ("Lasso",
                                             "RandomForestRegressor",
+                                            'AdaBoostRegressor',
                                             "regression linéaire"))
 
     # --------------------------------------------------------------------------------------------------------------
@@ -188,6 +225,11 @@ def monitoring(st, **state):
 
         elif dataset_name == 'Dataframe encodé avec feature engenering V2':
             data = df4
+
+        elif dataset_name == 'Dataframe avec toute les features':
+            data = df5
+
+
 
     # --------------------------------------------------------------------------------------------------------------
     # --------------------------------------------------------------------------------------------------------------
@@ -213,6 +255,11 @@ def monitoring(st, **state):
             y = data.calorie
             return X, y
 
+        elif dataset_name == 'Dataframe avec toute les features':
+            X = data.drop(['calorie'], axis=1)
+            y = data.calorie
+            return X, y
+
         else:
             X = data.drop(['age','calorie','Height_meters','Unnamed: 0','height','weight','duration', 'female', 'male'], axis=1)
             y = data.calorie
@@ -223,7 +270,7 @@ def monitoring(st, **state):
 
     X, y = get_dataset(dataset_name)
     MultiPage.save({"total": X}, namespaces=[ "Features" ])
-    st.write("Dataset", X)
+    st.write("**Dataset utilsé**", X)
 
 
     # --------------------------------------------------------------------------------------------------------------
@@ -258,6 +305,17 @@ def monitoring(st, **state):
             max_leaf_nodes = st.sidebar.slider("max_leaf_nodes", 2, 30)
             params["max_leaf_nodes"] = max_leaf_nodes
 
+        elif clf_name == "AdaBoostRegressor":
+
+            #### n_estimators
+            learning_rate = st.sidebar.slider("learning_rate", 0.1, 1.0)
+            params["learning_rate"] = learning_rate
+
+            #### n_estimators
+            n_estimators = st.sidebar.slider("n_estimators", 50, 500)
+            params["n_estimators"] = n_estimators
+
+
         else:
             #### positive
             positive = st.sidebar.selectbox("positive", (True, False))
@@ -272,7 +330,7 @@ def monitoring(st, **state):
     # --------------------------------------------------------------------------------------------------------------
     # --------------------------------------------------------------------------------------------------------------
 
-    #### 1- FONCTION DE CREATION: MODEL + PARAMETRE
+    #### 1- FONCTION DE CREATION: MODÉLE + PARAMÈTRE
 
     def get_regressor(clf_name, c):
 
@@ -285,6 +343,11 @@ def monitoring(st, **state):
             clf = RandomForestRegressor(n_estimators=params["n_estimators"],
                                         max_depth=params["max_depth"],
                                         max_leaf_nodes=params["max_leaf_nodes"])
+        elif clf_name == "AdaBoostRegressor":
+            clf = AdaBoostRegressor(learning_rate=params["learning_rate"],
+                                    n_estimators=params[ "n_estimators" ]
+                                     )
+
         ##### LinearRegression
         else:
             clf = LinearRegression(positive=params["positive"])
@@ -311,34 +374,41 @@ def monitoring(st, **state):
 
    # CROSS VALIDATION / GRID SEARCH
 
-    st.sidebar.header('Définir les HyperParamètres pour la cross val des données')
+    st.sidebar.header('Définir les HyperParamètres pour la validation croisée des données')
     parameter_cross_validation = st.sidebar.slider('Nombre de split de validation croisée', 2, 10)
-    n_repeats = st.sidebar.slider('nombre de répétitions valeur croisée', 1, 10)
+    n_repeats = st.sidebar.slider('nombre de répétitions des valeurs croisées', 1, 10)
     random_state_CV2 = st.sidebar.slider('Random state de la validation croisée', 1, 300)
-
-    Choose_score_metric = st.sidebar.selectbox("Choisir la métrique de performance", ('r2', 'neg_mean_absolute_error'))
 
     cv = RepeatedKFold(n_splits=parameter_cross_validation, n_repeats=n_repeats, random_state=random_state_CV2)
     # evaluate model
-    scores = cross_val_score(clf, X_train, y_train, scoring=Choose_score_metric, cv=cv).mean()
-    scores_test = cross_val_score(clf, X_test, y_test, scoring=Choose_score_metric, cv=cv).mean()
-    st.write(f"Cross val score Train Set = {scores}")
-    st.write(f"Cross val score Test Set = {scores_test}")
+    scores = cross_val_score(clf, X_train, y_train, scoring='r2', cv=cv).mean()
+    scores_test = cross_val_score(clf, X_test, y_test, scoring='r2', cv=cv).mean()
+    st.write("**Affichage des validations croisées**")
+    st.write(f"Cross val score du Train Set = {scores}")
+    st.write(f"Cross val score du Test Set = {scores_test}")
 
     st.spinner('En attente du fit des données d entrainement...')
     st.success('Done!')
 
-    #### ENTRAINEMENT DU MODELE SUR LE JEU D ENTRAIENEMENT
+    #### ENTRAINEMENT DU MODELE SUR LE JEU D ENTRAINENEMENT
     clf.fit(X_train, y_train)
+
+    # with open('LAST_MODEL_pkl', 'wb') as files:
+    #     pickle.dump(clf, files)
+
     #### PREDICTION SUR LE JEU DE TEST
     y_pred = clf.predict(X_test)
 
-    #### AFFICHAGE DU  MODELE DES METRIQUES
+    #### AFFICHAGE DU MODELE ET DES METRIQUES
     R2 = r2_score(y_test, y_pred)
     MAE = mean_absolute_error(y_test, y_pred)
 
-    st.sidebar.header('MODELE')
+
+    st.sidebar.header('  ')
+
+    st.write("**Affichage du modèle**")
     st.write(f"regressor = {regressior_name}")
+    st.write("**Affichage des métriques de performance**")
     st.write(f"R2 = {R2}")
     st.write(f"MAE = {MAE}")
 
@@ -368,6 +438,9 @@ def monitoring(st, **state):
     # --------------------------------------------------------------------------------------------------------------
 
     #### AFFICHAGE DES RESIDUS
+
+
+    st.markdown("**L'erreur de prédiction doit suivre une distribution normale avec une moyenne de 0**")
 
     from yellowbrick.regressor import ResidualsPlot
 
@@ -400,7 +473,7 @@ def visualisation_page(st, **state):
     profile = ProfileReport(df,
                             title="Diet Data",
                             dataset={
-                                "description": "This profiling report was generated for Simplon certification ",
+                                "description": "Ce rapport de profilage a été généré pour la certification Simplon.",
                                 "copyright_holder": "Camara Clement",
                                 "copyright_year": "2022"
                             })
@@ -417,7 +490,7 @@ def visualisation_page(st, **state):
 def read_me(st, **state):
     st.header('ARCHITECTURE')
 
-    image = Image.open('data/schema_archi.png')
+    image = Image.open('data/arrchi_projet_vf.png')
     st.image(image)
 
     st.header('Pré-requis')
@@ -440,18 +513,20 @@ conda activate environnement '''
     code = '''conda env export --from-history > environment.yml '''
     st.code(code, language='python')
 
-    st.markdown("**3) Si vous n'utilisez pas conda récupérer les packages avec le requirements.txt**")
+    st.markdown("**3) Si vous n'utilisez pas conda récupérez les packages avec le requirements.txt**")
 
     st.markdown("**4) Démarrer streamlit en local**")
     code = '''streamlit run main.py'''
     st.code(code, language='python')
 
-    st.markdown("**5) Démarrer flask en local **")
+    st.markdown("**5) Lancer l'application Flask**")
     code = '''Lancer app.py'''
     st.code(code, language='python')
 
-    st.header('STATS')
-
+    st.header('SECURITÉ')
+    st.markdown("**App Streamli **")
+    "Authentification unique : tous les accès et connexions à Streamlit sont effectués via un fournisseur SSO : GitHub et GSuite. Les mots de passe des clients ne sont pas stockés."
+    "Stockage des identifiants : les jetons d'authentification sont chiffrés"
 
     st.header('FONCTIONNALITÉS :')
 
@@ -574,6 +649,7 @@ app = MultiPage()
 app.navbar_style = "SelectBox"
 app.st = st
 app.navbar_name = "Menu"
+
 app.add_app("Diet app Page", app_page)
 app.add_app("Monitoring Page", monitoring)
 app.add_app("Visualisation Page", visualisation_page)

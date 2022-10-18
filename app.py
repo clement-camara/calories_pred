@@ -61,5 +61,9 @@ def preprocessDataAndPredict(gender, age, height, weight, duration, heart_rate, 
     print(test_data)
     prediction = model_pkl_trained_model.predict(test_data)
     print(prediction)
-    return predict
+    return prediction
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
