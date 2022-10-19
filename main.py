@@ -161,7 +161,7 @@ def app_page(st, **state):
     #### FONCTION POUR LA PREIDTION ET CREATION DU BOUTON AVEC UNE ANIMATION
 
     def predict_(data):
-        with open('/Users/marinelafargue/Desktop/projet calorie/LAST_RUN/Random_forest6_features_pkl', 'rb') as f:
+        with open('/Random_forest6_features_pkl', 'rb') as f:
             model_reg = pickle.load(f)
             return model_reg.predict(data)
 
