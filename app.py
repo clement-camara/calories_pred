@@ -66,4 +66,3 @@ def preprocessDataAndPredict(gender, age, height, weight, duration, heart_rate, 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
